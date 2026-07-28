@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>mywholelife - Gallery</title>
+
+  <style>
+    body{
+      margin:0;
+      background:#111;
+      color:white;
+      font-family:Arial, sans-serif;
+    }
+
+    header{
+      text-align:center;
+      padding:30px;
+      font-size:32px;
+      font-weight:bold;
+    }
+
+    .gallery{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+      gap:15px;
+      padding:20px;
+    }
+
+    .gallery img{
+      width:100%;
+      border-radius:15px;
+      aspect-ratio:1/1;
+      object-fit:cover;
+      transition:0.3s;
+    }
+
+    .gallery img:hover{
+      transform:scale(1.03);
+    }
+
+    .demo-btn{
+      display:block;
+      width:300px;
+      max-width:90%;
+      margin:40px auto;
+      padding:15px;
+      border:none;
+      border-radius:50px;
+      background:white;
+      color:black;
+      font-size:18px;
+      font-weight:bold;
+      cursor:pointer;
+    }
+  </style>
+</head>
+<body>
+
+<header>mywholelife</header>
+
+<div class="gallery">
+  <img src="https://picsum.photos/500?1">
+  <img src="https://picsum.photos/500?2">
+  <img src="https://picsum.photos/500?3">
+  <img src="https://picsum.photos/500?4">
+  <img src="https://picsum.photos/500?5">
+  <img src="https://picsum.photos/500?6">
+</div>
+
+<button class="demo-btn" onclick="demoUpload()">
+Upload to All Social Platforms
+</button>
+
+<script>
+function demoUpload(){
+    alert("Demo only. This button does not upload to any social media platform.");
+}
+</script>
+
+</body>
+</html>

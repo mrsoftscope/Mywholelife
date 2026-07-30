@@ -4,60 +4,27 @@ import "../styles/Home.css";
 
 function Home() {
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        background: "linear-gradient(to bottom, #0f172a, #1e293b)",
-        color: "white",
-        fontFamily: "Arial, sans-serif",
-      }}
-    >
+    <div className="home-page">
       <Navbar />
 
-      {/* Hero Section */}
-      <div
-        style={{
-          textAlign: "center",
-          padding: "120px 20px",
-          maxWidth: "900px",
-          margin: "auto",
-        }}
-      >
-        <h1
-          style={{
-            fontSize: "60px",
-            marginBottom: "20px",
-          }}
-        >
-          Every Memory Matters ❤️
+      <div className="hero">
+        <h1 className="hero-title">
+          <span className="typewriter">
+            Every Secret Comes to Light.
+          </span>
         </h1>
 
-        <p
-          style={{
-            fontSize: "22px",
-            lineHeight: "1.8",
-            color: "#d1d5db",
-          }}
-        >
-          Welcome to our family's digital memory book.
-          Every smile, every celebration, every milestone,
-          all preserved in one beautiful place.
+        <p className="hero-text">
+          Nothing stays hidden forever.
+          <br />
+          Every choice leaves a trace, and every secret has its day.
+          <br />
+          The only question is whether you're ready for it.
         </p>
 
         <Link to="/gallery">
-          <button
-            style={{
-              marginTop: "40px",
-              padding: "16px 35px",
-              fontSize: "18px",
-              borderRadius: "50px",
-              border: "none",
-              cursor: "pointer",
-              background: "#2563eb",
-              color: "white",
-            }}
-          >
-            View Gallery
+          <button className="hero-btn">
+            Check Yours
           </button>
         </Link>
       </div>

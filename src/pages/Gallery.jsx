@@ -1,211 +1,458 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { collection, getDocs, orderBy, query } from "firebase/firestore";
 import { db } from "../firebase/config";
 import Navbar from "../components/Navbar";
 import "../styles/Gallery.css";
 
 function Gallery() {
+
   const [photos, setPhotos] = useState([]);
-  const [selectedPhoto, setSelectedPhoto] = useState(null);
-  const [selectedAlbum, setSelectedAlbum] = useState("All");
+  const [selectedIndex, setSelectedIndex] = useState(null);
+  const [showImages, setShowImages] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+
+  async function loadPhotos() {
+  try {
+    setLoading(true);
+
+    const q = query(
+      collection(db, "photos"),
+      orderBy("createdAt", "desc")
+    );
+
+    const snapshot = await getDocs(q);
+
+    const data = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+    setPhotos(data);
+    setShowImages(true);
+  } catch (error) {
+    console.error("Gallery Error:", error);
+
+    alert(
+      `Failed to load images.\n\n${error.message}`
+    );
+  } finally {
+    setLoading(false);
+  }
+}
 
   useEffect(() => {
-    async function fetchPhotos() {
-      const q = query(
-        collection(db, "photos"),
-        orderBy("createdAt", "desc")
-      );
 
-      const snapshot = await getDocs(q);
+    function handleKeyDown(e) {
 
-      const data = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
+      if (selectedIndex === null) return;
 
-      setPhotos(data);
+
+      if (e.key === "Escape") {
+        setSelectedIndex(null);
+      }
+
+
+      if (e.key === "ArrowRight") {
+        nextPhoto();
+      }
+
+
+      if (e.key === "ArrowLeft") {
+        previousPhoto();
+      }
+
     }
 
-    fetchPhotos();
-  }, []);
 
-  const filteredPhotos = photos.filter((photo) => {
-    if (selectedAlbum === "All") return true;
-    return (photo.album || "Family") === selectedAlbum;
-  });
+    window.addEventListener(
+      "keydown",
+      handleKeyDown
+    );
+
+
+    return () =>
+      window.removeEventListener(
+        "keydown",
+        handleKeyDown
+      );
+
+
+  }, [selectedIndex, photos]);
+
+
+
+
+  function nextPhoto() {
+
+    if (selectedIndex === null) return;
+
+
+    if (selectedIndex < photos.length - 1) {
+
+      setSelectedIndex(
+        selectedIndex + 1
+      );
+
+    }
+
+  }
+
+
+
+
+  function previousPhoto() {
+
+    if (selectedIndex === null) return;
+
+
+    if (selectedIndex > 0) {
+
+      setSelectedIndex(
+        selectedIndex - 1
+      );
+
+    }
+
+  }
+
+
+
+
+  const selectedPhoto =
+    selectedIndex !== null
+      ? photos[selectedIndex]
+      : null;
+
+
+
+
+  function closeViewer() {
+
+    setSelectedIndex(null);
+
+  }
+
+
+
+
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        background: "#0f172a",
-        color: "white",
-      }}
-    >
+
+    <div className="gallery-page">
+
+
       <Navbar />
 
-      <div
-        style={{
-          padding: "40px",
-        }}
-      >
-        <h1
-          style={{
-            textAlign: "center",
-            marginBottom: "20px",
-          }}
-        >
-          📸 Family Gallery
+
+
+      <div className="gallery-container">
+
+
+
+        <h1 className="gallery-title">
+          The Revelation
         </h1>
 
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            marginBottom: "35px",
-          }}
-        >
-          <select
-            value={selectedAlbum}
-            onChange={(e) => setSelectedAlbum(e.target.value)}
-            style={{
-              padding: "12px",
-              borderRadius: "8px",
-              fontSize: "16px",
-              minWidth: "220px",
-              cursor: "pointer",
-            }}
+
+
+
+        <div className="gallery-buttons">
+
+
+          <Link
+            to="/files"
+            className="gallery-btn"
           >
-            <option value="All">📚 All Albums</option>
-            <option value="Family">👨‍👩‍👧 Family</option>
-            <option value="Baby">👶 Baby</option>
-            <option value="Wedding">💍 Wedding</option>
-            <option value="Birthdays">🎂 Birthdays</option>
-            <option value="Trips">✈️ Trips</option>
-            <option value="Christmas">🎄 Christmas</option>
-          </select>
+            Your Files
+          </Link>
+
+
+
+
+          <button
+
+            className="gallery-btn"
+
+            onClick={loadPhotos}
+
+          >
+
+            Your Images
+
+          </button>
+
+
+
+
+
+          <Link
+            to="/families"
+            className="gallery-btn"
+          >
+            Your Families
+          </Link>
+
+
+
         </div>
 
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-            gap: "25px",
-          }}
-        >
-          {filteredPhotos.map((photo) => (
-            <div
-              key={photo.id}
-              onClick={() => setSelectedPhoto(photo)}
-              style={{
-                background: "#1e293b",
-                borderRadius: "18px",
-                overflow: "hidden",
-                cursor: "pointer",
-                transition: "0.3s",
-                boxShadow: "0 10px 25px rgba(0,0,0,.35)",
-              }}
-            >
-              <img
-                src={photo.imageUrl}
-                alt={photo.caption}
-                style={{
-                  width: "100%",
-                  height: "280px",
-                  objectFit: "cover",
-                }}
-              />
+
+
+
+
+        {!showImages && (
+
+          <div
+            style={{
+              textAlign:"center",
+              marginTop:"40px",
+              color:"#666"
+            }}
+          >
+
+            Click "Your Images" to view memories
+
+          </div>
+
+        )}
+
+
+
+
+
+
+        {loading && (
+
+          <div
+            style={{
+              textAlign:"center",
+              marginTop:"30px"
+            }}
+          >
+
+            Loading images...
+
+          </div>
+
+        )}
+
+
+
+
+
+
+
+        {showImages && !loading && (
+
+          <div className="gallery-grid">
+
+
+            {photos.map((photo,index)=>(
+
 
               <div
-                style={{
-                  padding: "18px",
-                }}
-              >
-                <p
-                  style={{
-                    color: "#60a5fa",
-                    fontWeight: "bold",
-                    marginBottom: "8px",
-                  }}
-                >
-                  {photo.album || "Family"}
-                </p>
 
-                <p>{photo.caption}</p>
+                key={photo.id}
+
+                className="gallery-card"
+
+                onClick={() =>
+                  setSelectedIndex(index)
+                }
+
+              >
+
+
+
+                <img
+
+                  src={photo.imageUrl}
+
+                  alt="memory"
+
+                />
+
+
+
+                <div className="gallery-content">
+
+
+                  <p className="album-name">
+
+                    {photo.album || "Family"}
+
+                  </p>
+
+
+                </div>
+
+
+
               </div>
-            </div>
-          ))}
-        </div>
+
+
+            ))}
+
+
+          </div>
+
+        )}
+
+
+
       </div>
 
+
+
+
+
+
       {selectedPhoto && (
+
         <div
-          onClick={() => setSelectedPhoto(null)}
-          style={{
-            position: "fixed",
-            inset: 0,
-            background: "rgba(0,0,0,0.9)",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            zIndex: 1000,
-            padding: "20px",
-          }}
+
+          className="viewer"
+
+          onClick={closeViewer}
+
         >
+
+
+
           <div
-            onClick={(e) => e.stopPropagation()}
-            style={{
-              maxWidth: "900px",
-              width: "100%",
-            }}
+
+            className="viewer-box"
+
+            onClick={(e)=>e.stopPropagation()}
+
           >
-            <img
-              src={selectedPhoto.imageUrl}
-              alt={selectedPhoto.caption}
+
+
+
+            <div
               style={{
-                width: "100%",
-                borderRadius: "12px",
+                display:"flex",
+                justifyContent:"space-between",
+                alignItems:"center",
+                marginBottom:"15px",
+                color:"white"
               }}
+            >
+
+
+
+              <button
+
+                onClick={previousPhoto}
+
+                disabled={selectedIndex===0}
+
+              >
+
+                ◀
+
+              </button>
+
+
+
+
+
+              <span>
+
+                Image {selectedIndex + 1}
+                {" "}of{" "}
+                {photos.length}
+
+              </span>
+
+
+
+
+
+              <button
+
+                onClick={nextPhoto}
+
+                disabled={
+                  selectedIndex === photos.length - 1
+                }
+
+              >
+
+                ▶
+
+              </button>
+
+
+
+            </div>
+
+
+
+
+
+            <img
+
+              src={selectedPhoto.imageUrl}
+
+              alt="selected memory"
+
             />
 
+
+
+
+
             <h3
+
               style={{
-                textAlign: "center",
-                color: "#60a5fa",
-                marginTop: "20px",
+                textAlign:"center",
+                color:"#60a5fa",
+                marginTop:"20px"
               }}
+
             >
+
               {selectedPhoto.album || "Family"}
+
             </h3>
 
-            <h2
-              style={{
-                textAlign: "center",
-                marginTop: "10px",
-              }}
-            >
-              {selectedPhoto.caption}
-            </h2>
+
+
+
 
             <button
-              onClick={() => setSelectedPhoto(null)}
-              style={{
-                marginTop: "20px",
-                width: "100%",
-                padding: "12px",
-                border: "none",
-                borderRadius: "8px",
-                cursor: "pointer",
-                fontSize: "18px",
-              }}
+
+              className="close-btn"
+
+              onClick={closeViewer}
+
             >
-              Close
+
+              Return
+
             </button>
+
+
+
+
           </div>
+
+
         </div>
+
+
       )}
+
+
+
     </div>
+
   );
+
 }
+
 
 export default Gallery;

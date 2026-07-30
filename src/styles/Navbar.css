@@ -2,6 +2,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
   padding: 20px 50px;
   background: rgba(15, 23, 42, 0.95);
   position: sticky;
@@ -13,6 +14,7 @@
 .logo {
   color: white;
   margin: 0;
+  font-size: 1.7rem;
 }
 
 .nav-links {
@@ -23,9 +25,69 @@
 .nav-links a {
   color: white;
   text-decoration: none;
-  transition: 0.3s;
+  font-size: 1rem;
+  transition: 0.3s ease;
 }
 
 .nav-links a:hover {
   color: #60a5fa;
+}
+
+/* ---------------------- */
+/* Mobile Responsive */
+/* ---------------------- */
+
+@media (max-width: 768px) {
+
+  .navbar {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 18px 20px;
+    gap: 18px;
+  }
+
+  .logo {
+    font-size: 1.5rem;
+    text-align: center;
+  }
+
+  .nav-links {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 18px;
+  }
+
+  .nav-links a {
+    font-size: 1rem;
+    padding: 8px 12px;
+  }
+
+}
+
+/* ---------------------- */
+/* Small Phones */
+/* ---------------------- */
+
+@media (max-width: 480px) {
+
+  .navbar {
+    padding: 15px;
+  }
+
+  .logo {
+    font-size: 1.3rem;
+  }
+
+  .nav-links {
+    gap: 12px;
+  }
+
+  .nav-links a {
+    font-size: 0.95rem;
+    padding: 6px 10px;
+  }
+
 }

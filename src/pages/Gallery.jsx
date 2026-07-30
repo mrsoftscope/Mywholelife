@@ -276,17 +276,7 @@ function Gallery() {
 
 
 
-                <div className="gallery-content">
-
-
-                  <p className="album-name">
-
-                    {photo.album || "Family"}
-
-                  </p>
-
-
-                </div>
+                
 
 
 
@@ -400,25 +390,6 @@ function Gallery() {
               alt="selected memory"
 
             />
-
-
-
-
-
-            <h3
-
-              style={{
-                textAlign:"center",
-                color:"#60a5fa",
-                marginTop:"20px"
-              }}
-
-            >
-
-              {selectedPhoto.album || "Family"}
-
-            </h3>
-
 
 
 

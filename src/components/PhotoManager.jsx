@@ -4,7 +4,6 @@ import {
   getDocs,
   deleteDoc,
   doc,
-  updateDoc,
   orderBy,
   query,
 } from "firebase/firestore";
@@ -45,28 +44,6 @@ function PhotoManager() {
     }
   };
 
-  const handleEdit = async (photo) => {
-    const newCaption = prompt(
-      "Enter a new caption:",
-      photo.caption
-    );
-
-    if (newCaption === null) return;
-
-    try {
-      await updateDoc(doc(db, "photos", photo.id), {
-        caption: newCaption,
-      });
-
-      loadPhotos();
-
-      alert("Caption updated successfully.");
-    } catch (error) {
-      console.error(error);
-      alert("Failed to update caption.");
-    }
-  };
-
   return (
     <div>
       <h2
@@ -101,7 +78,7 @@ function PhotoManager() {
             >
               <img
                 src={photo.imageUrl}
-                alt={photo.caption}
+                alt="Photo"
                 style={{
                   width: "100%",
                   height: "220px",
@@ -110,24 +87,6 @@ function PhotoManager() {
               />
 
               <div style={{ padding: "15px" }}>
-                <p>{photo.caption}</p>
-
-                <button
-                  onClick={() => handleEdit(photo)}
-                  style={{
-                    width: "100%",
-                    padding: "10px",
-                    marginBottom: "10px",
-                    background: "#2563eb",
-                    color: "white",
-                    border: "none",
-                    borderRadius: "8px",
-                    cursor: "pointer",
-                  }}
-                >
-                  Edit Caption
-                </button>
-
                 <button
                   onClick={() => handleDelete(photo.id)}
                   style={{

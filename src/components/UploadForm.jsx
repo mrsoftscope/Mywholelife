@@ -4,7 +4,6 @@ import { db } from "../firebase/config";
 
 function UploadForm() {
   const [imageUrl, setImageUrl] = useState("");
-  const [caption, setCaption] = useState("");
   const [album, setAlbum] = useState("Family");
 
   const handleSubmit = async (e) => {
@@ -18,7 +17,6 @@ function UploadForm() {
     try {
       await addDoc(collection(db, "photos"), {
         imageUrl,
-        caption,
         album,
         createdAt: serverTimestamp(),
       });
@@ -26,9 +24,7 @@ function UploadForm() {
       alert("Photo added successfully!");
 
       setImageUrl("");
-      setCaption("");
       setAlbum("Family");
-
     } catch (error) {
       console.error(error);
       alert(error.message);
@@ -53,14 +49,6 @@ function UploadForm() {
         placeholder="Paste Image URL"
         value={imageUrl}
         onChange={(e) => setImageUrl(e.target.value)}
-        style={{ padding: "12px" }}
-      />
-
-      <input
-        type="text"
-        placeholder="Write a caption"
-        value={caption}
-        onChange={(e) => setCaption(e.target.value)}
         style={{ padding: "12px" }}
       />
 
